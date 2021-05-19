@@ -22,6 +22,12 @@ def character_distance(text1, text2):
     for tag, i1,i2, j1,j2 in SQ(None, text1, text2).get_opcodes():
         if tag != 'equal':
             distance += max(i2-i1, j2-j1)
+
+    # true edit distance can not be larger than the longest string!
+    # sequence matcher sometimes tries to match characters too hard
+    # at the expence of doing extra edits -MK
+    distance = min(distance, max(len(text1), len(text2)))
+
     return distance
 
 def metric(gold, ocr):

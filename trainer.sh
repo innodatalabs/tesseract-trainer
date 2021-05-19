@@ -1,5 +1,5 @@
 #!/usr/bin/bash
-set -xe
+set -e
 
 ## working directory for the training (we will create it if not present)
 WORKDIR=/home/output
@@ -23,6 +23,17 @@ TARGET_ERROR_RATE=${TARGET_ERROR_RATE:-0.01}
 umask 0000;
 
 mkdir -p ${WORKDIR}
+
+exec > >(tee -a ${WORKDIR}/trainer.log) 2>&1
+
+echo "*******************************************************************"
+echo "*******************************************************************"
+echo "BASE_LANG=${BASE_LANG}"
+echo "LEARNING_RATE=${LEARNING_RATE}"
+echo "MAX_ITERATIONS=${MAX_ITERATIONS}"
+echo "TARGET_ERROR_RATE=${TARGET_ERROR_RATE}"
+echo "*******************************************************************"
+
 ## make sure that base language was installed. If not, try installing.
 if [ ! -f ${TESSDATA_PREFIX}/${BASE_LANG}.traineddata ]; then
     (
