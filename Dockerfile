@@ -16,13 +16,23 @@ RUN apt-get install -y --reinstall make && \
 # Set working directory
 WORKDIR /app
 
+COPY text_from_box.py \
+    trainer.sh radical-stroke.txt evaluate.sh evaluate.py \
+    lstmtrainer.patch /app/
+
 # Getting tesstrain: beware the source might change or not being available
 # Complie Tesseract with training options (also feel free to update Tesseract versions and such!)
 # Getting data: beware the source might change or not being available
-RUN mkdir src && cd /app/src && \
+RUN mkdir src && \
+    cd /app/src && \
     wget https://github.com/tesseract-ocr/tesseract/archive/4.1.1.zip && \
 	unzip 4.1.1.zip && \
-    cd /app/src/tesseract-4.1.1 && ./autogen.sh && ./configure && make && make install && ldconfig && \
+    cd /app/src/tesseract-4.1.1 && \
+    patch src/lstm/lstmtrainer.cpp /app/lstmtrainer.patch && \
+    ./autogen.sh && \
+    ./configure && \
+    make && make install && \
+    ldconfig && \
     make training && make training-install
 
 # Setting the data prefix
@@ -30,7 +40,6 @@ ENV TESSDATA_PREFIX=/usr/local/share/tessdata
 
 # Install libraries using pip installer
 RUN pip3 install Pillow pytesseract
-COPY text_from_box.py trainer.sh radical-stroke.txt /app/
 
 # Set the locale
 RUN apt-get install -y locales && locale-gen en_US.UTF-8
@@ -38,7 +47,5 @@ ENV LC_ALL=en_US.UTF-8
 ENV LANG=en_US.UTF-8
 ENV LANGUAGE=en_US.UTF-8
 ENV PYTHONPATH=/app
-
-COPY evaluate.sh evaluate.py /app/
 
 CMD ["/app/trainer.sh"]
