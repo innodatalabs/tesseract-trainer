@@ -79,14 +79,12 @@ docker run -v $PWD:/home -it mkroutikov/tesseract-trainer
 The following training parameters can be configured with via
 docker environment variables:
 
-|--------------------------------------------|
 | Envirnment variable | Default | Description|
 |--------------------------------------------|
 | BASE_LANG           | eng     | Base language model (we use "best", not "fast" |
 | LEARNING_RATE       | 0.0001  | Learning rate |
 | MAX_ITERATIONS       | 10000  | Limit on the total number of traiing iterations |
 | TARGET_ERROR_RATE | 0.01 | Target error rate |
-|----------------------------------------------|
 
 Example of training for 20000 iterations:
 ```bash
