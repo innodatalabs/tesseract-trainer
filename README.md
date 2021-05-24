@@ -63,6 +63,21 @@ Tesseract langage file named `output/trained.traineddata`. Move it
 to the location of tesseract languages (and rename). You now have
 the new language available!
 
+Training session output is logged in `output/trainer.log`.
+
+## Run the docker command to evaluate the trained language
+
+This assumes that training session has completed successfully, resulting in
+trained language model `output/trained.traineddata`.
+
+```bash
+docker run -v $PWD:/home -it mkroutikov/tesseract-trainer ./evaluate.sh
+```
+This command will predict all files in the validation split and
+compute micro and macro F1 statistics.
+
+Evaluation log can be found in `output/evaluate.log`.
+
 ## Sample session
 This repository proivides a set of sample training files.
 
